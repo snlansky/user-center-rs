@@ -19,9 +19,7 @@ async fn main() -> std::io::Result<()> {
     let user_service = service::UserService::new();
     let ctrl = controller::Controller::new(user_service);
     let ctrl = sync::Arc::new(ctrl);
-    HttpServer::new(move ||
-        App::new().data(ctrl.clone()).service(index)
-    )
+    HttpServer::new(move || App::new().data(ctrl.clone()).service(index))
         .bind("0.0.0.0:8081")?
         .run()
         .await

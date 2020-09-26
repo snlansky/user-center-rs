@@ -1,5 +1,5 @@
-use crate::model;
 use crate::error::Result;
+use crate::model;
 
 pub struct UserService {
     op: model::UserOp,
@@ -12,7 +12,7 @@ impl UserService {
         }
     }
 
-    pub async fn find_by_id(&self, id :&str) -> Result<Option<model::User>> {
+    pub async fn find_by_id(&self, id: &str) -> Result<Option<model::User>> {
         self.op.find_by_id(id).await
     }
 }
