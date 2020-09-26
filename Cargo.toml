@@ -15,5 +15,5 @@ serde = "1.0.116"
 
 [dependencies.mongodb]
 version = "1.1.0"
-#default-features = false
-#features = ["async-std-runtime"]
+default-features = false
+features = ["async-std-runtime"]

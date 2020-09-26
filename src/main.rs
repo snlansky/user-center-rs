@@ -1,4 +1,5 @@
 use actix_web::{get, web, App, HttpServer, Responder};
+use crate::controller::index;
 
 #[macro_use]
 extern crate lazy_static;
@@ -8,16 +9,9 @@ extern crate lazy_static;
 mod controller;
 mod service;
 mod model;
-pub mod dao;
-pub mod error;
+mod dao;
+mod error;
 
-
-#[get("/{id}")]
-async fn index(web::Path((id)): web::Path<(String)>) -> impl Responder {
-    let op = model::UserOp::new();
-    let user = op.find_by_id(&id).await.unwrap();
-    format!("Hello {:?}!", user)
-}
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -28,7 +22,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(||
         App::new().service(index)
     )
-        .bind("127.0.0.1:8080")?
+        .bind("0.0.0.0:8081")?
         .run()
         .await
 }
