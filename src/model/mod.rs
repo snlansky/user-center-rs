@@ -1,38 +1,46 @@
 mod user;
 pub use user::*;
+use serde::{Serialize, Deserialize};
+use actix_web::HttpResponse;
+use crate::error::Result;
 
 
 const SUCCESS_CODE :i32 = 0;
 const SUCCESS_MSG :&str = "ok";
 
-pub struct Response<T> {
-    errorcode :i32,
-    description:String,
+#[derive(Deserialize, Serialize)]
+pub struct Response<T> where T: Serialize{
+    code:i32,
+    message:String,
     data: Option<T>,
 }
 
-impl <T> Response<T> {
-    pub fn new(data: T) -> Self {
+impl <T: Serialize> Response<T> {
+    pub fn ok(data: T) -> Self {
         Response {
-            errorcode: SUCCESS_CODE,
-            description: SUCCESS_MSG.to_string(),
+            code: SUCCESS_CODE,
+            message: SUCCESS_MSG.to_owned(),
             data: Some(data),
         }
     }
 
     pub fn new_internal_error(msg: &str) -> Self{
         Response {
-            errorcode: 500,
-            description: msg.to_string(),
+            code: 500,
+            message: msg.to_owned(),
             data: None
         }
     }
 
     pub fn new_from_errmsg(code: i32, msg: &str) -> Self {
         Response {
-            errorcode:code,
-            description:msg.to_string(),
+            code,
+            message:msg.to_owned(),
             data:None,
         }
+    }
+
+    pub fn to_json_result(&self) -> Result<HttpResponse> {
+        Ok(HttpResponse::Ok().json(self))
     }
 }

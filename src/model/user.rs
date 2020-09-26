@@ -1,12 +1,12 @@
 use crate::dao;
-use crate::error::Result;
-use serde::{Deserialize, Serialize, Serializer};
+
+use serde::{Deserialize, Serialize};
 use bson::oid::ObjectId;
 use dao::serialize_object_id;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct User {
-    #[serde(serialize_with = "serialize_object_id")]
+    #[serde(serialize_with = "serialize_object_id", rename="id")]
     pub _id: Option<ObjectId>,
     pub name: String,
     pub network_id: String,

@@ -49,7 +49,9 @@ impl Dao {
 
     pub async fn find_by_id<T>(&self, id: &str) -> Result<Option<T>>
     where T: DeserializeOwned{
-        let filter = doc! { "_id":  id};
+        let oid = ObjectId::with_string(id)?;
+
+        let filter = doc! { "_id":  oid};
         let data = self.coll.find_one(filter, None).await?;
         match data {
             Some(d) => {
