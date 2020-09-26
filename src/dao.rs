@@ -60,7 +60,7 @@ impl Dao {
         let data = self.coll.find_one(filter, None).await?;
         match data {
             Some(d) => {
-                let data: T = bson::from_document(d)?;
+                let data: T = bson::from_document(d).unwrap();
                 Ok(Some(data))
             }
             None => Ok(None),

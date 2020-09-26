@@ -1,6 +1,7 @@
 use crate::service;
 use actix_web::{get, web, Responder};
 use std::sync;
+use crate::model::Response;
 
 pub struct Controller {
     pub user_service: service::UserService,
@@ -13,5 +14,5 @@ pub async fn index(
 ) -> impl Responder {
     let user = ctrl.user_service.find_by_id(&id).await.unwrap();
 
-    format!("Hello {:?}!", user)
+    Response::ok(user).to_json_result()
 }

@@ -26,23 +26,13 @@ impl<T: Serialize> Response<T> {
         }
     }
 
-    pub fn new_internal_error(msg: &str) -> Self {
-        Response {
-            code: 500,
-            message: msg.to_owned(),
-            data: None,
-        }
-    }
-
-    pub fn new_from_errmsg(code: i32, msg: &str) -> Self {
-        Response {
-            code,
-            message: msg.to_owned(),
-            data: None,
-        }
-    }
-
     pub fn to_json_result(&self) -> Result<HttpResponse> {
         Ok(HttpResponse::Ok().json(self))
+    }
+}
+
+impl Response<()> {
+    pub fn err(error: i32, message: &str) -> Self {
+        Response { code: error, message: message.to_owned(), data: None }
     }
 }
