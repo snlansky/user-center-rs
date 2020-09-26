@@ -1,14 +1,15 @@
 use crate::error::Result;
 use crate::model;
+use crate::dao;
 
 pub struct UserService {
-    op: model::UserOp,
+    op: dao::Dao,
 }
 
 impl UserService {
     pub fn new() -> Self {
         UserService {
-            op: model::UserOp::new(),
+            op: dao::Dao::new(model::User::TABLE_NAME),
         }
     }
 

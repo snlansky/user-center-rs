@@ -1,10 +1,13 @@
 use crate::dao;
 use crate::error::Result;
-use mongodb::bson::doc;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Serialize, Serializer};
+use bson::oid::ObjectId;
+use dao::serialize_object_id;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct User {
+    #[serde(serialize_with = "serialize_object_id")]
+    pub _id: Option<ObjectId>,
     pub name: String,
     pub network_id: String,
     pub consensus: String,
@@ -16,25 +19,8 @@ pub struct User {
     pub description: String,
 }
 
-pub struct UserOp {
-    coll: mongodb::Collection,
+
+impl User {
+    pub const TABLE_NAME: &'static str = "user";
 }
 
-impl UserOp {
-    pub fn new() -> Self {
-        let coll = dao::collection("user");
-        UserOp { coll }
-    }
-
-    pub async fn find_by_id(&self, id: &str) -> Result<Option<User>> {
-        let filter = doc! { "_id":  id};
-        let data = self.coll.find_one(filter, None).await?;
-        match data {
-            Some(d) => {
-                let user: User = bson::from_document(d)?;
-                Ok(Some(user))
-            }
-            None => Ok(None),
-        }
-    }
-}
