@@ -1,5 +1,5 @@
-use crate::{model, service};
-use actix_web::{get, web, App, HttpServer, Responder};
+use crate::{service};
+use actix_web::{get, web, Responder};
 use std::sync;
 
 pub struct Controller {
@@ -13,7 +13,7 @@ impl Controller {
 }
 
 #[get("/{id}")]
-pub async fn index(web::Path((id)): web::Path<(String)>, ctrl: web::Data<sync::Arc<Controller>>) -> impl Responder {
+pub async fn index(web::Path(id): web::Path<String>, ctrl: web::Data<sync::Arc<Controller>>) -> impl Responder {
     let user = ctrl.user_service.find_by_id(&id).await.unwrap();
 
     format!("Hello {:?}!", user)

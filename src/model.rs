@@ -2,7 +2,7 @@ use crate::dao;
 use crate::error::Result;
 use mongodb::bson::doc;
 use serde::{Deserialize, Serialize};
-use std::ops::Deref;
+
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct User {
