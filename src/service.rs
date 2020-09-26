@@ -1,6 +1,6 @@
+use crate::dao;
 use crate::error::Result;
 use crate::model;
-use crate::dao;
 
 pub struct UserService {
     op: dao::Dao,
