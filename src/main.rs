@@ -1,5 +1,5 @@
 use crate::controller::index;
-use actix_web::{get, web, App, HttpServer, Responder};
+use actix_web::{App, HttpServer};
 use std::sync;
 
 #[macro_use]
@@ -17,7 +17,9 @@ async fn main() -> std::io::Result<()> {
     dao::init(uri).await;
 
     let user_service = service::UserService::new();
-    let ctrl = controller::Controller::new(user_service);
+    let ctrl = controller::Controller{
+        user_service,
+    };
     let ctrl = sync::Arc::new(ctrl);
     HttpServer::new(move || App::new().data(ctrl.clone()).service(index))
         .bind("0.0.0.0:8081")?

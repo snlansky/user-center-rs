@@ -3,13 +3,7 @@ use actix_web::{get, web, Responder};
 use std::sync;
 
 pub struct Controller {
-    user_service: service::UserService,
-}
-
-impl Controller {
-    pub fn new(user_service: service::UserService) -> Self {
-        Controller { user_service }
-    }
+    pub user_service: service::UserService,
 }
 
 #[get("/{id}")]
