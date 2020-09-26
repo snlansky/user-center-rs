@@ -1,10 +1,9 @@
-use crate::{service, model};
+use crate::{model, service};
 use actix_web::{get, web, App, HttpServer, Responder};
 
 pub struct Controller {
-    user_service: service::UserService
+    user_service: service::UserService,
 }
-
 
 #[get("/{id}")]
 pub async fn index(web::Path((id)): web::Path<(String)>) -> impl Responder {
