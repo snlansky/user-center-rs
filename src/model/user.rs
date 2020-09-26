@@ -22,8 +22,7 @@ pub struct UserOp {
 
 impl UserOp {
     pub fn new() -> Self {
-        let db = dao::DB.lock().unwrap();
-        let coll = (*db).as_ref().unwrap().collection("user");
+        let coll = dao::collection("user");
         UserOp { coll }
     }
 
