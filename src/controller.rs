@@ -1,7 +1,7 @@
+use crate::model::Response;
 use crate::service;
 use actix_web::{get, web, Responder};
 use std::sync;
-use crate::model::Response;
 
 pub struct Controller {
     pub user_service: service::UserService,

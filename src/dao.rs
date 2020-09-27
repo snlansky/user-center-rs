@@ -1,4 +1,4 @@
-use crate::error::{Result, BusinessError};
+use crate::error::{BusinessError, Result};
 use bson::oid::ObjectId;
 use mongodb::bson::doc;
 use mongodb::{Client, Collection, Database};
@@ -60,7 +60,7 @@ impl Dao {
         let data = self.coll.find_one(filter, None).await?;
         match data {
             Some(d) => {
-                let data: T = bson::from_document(d).unwrap();
+                let data: T = bson::from_document(d).map_err(|e| BusinessError::InternalError {source:anyhow!(e)})?;
                 Ok(Some(data))
             }
             None => Ok(None),

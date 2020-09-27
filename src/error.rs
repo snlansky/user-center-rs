@@ -1,8 +1,7 @@
-use actix_web::{HttpResponse, error};
-use thiserror::Error;
 use crate::model::Response;
+use actix_web::{HttpResponse, ResponseError};
+use thiserror::Error;
 
-pub type BoxError = Box<dyn std::error::Error + Send + Sync + 'static>;
 pub type Result<T> = std::result::Result<T, BusinessError>;
 
 #[derive(Error, Debug)]
@@ -18,43 +17,36 @@ pub enum BusinessError {
     },
 }
 
-
-
-impl error::ResponseError for BusinessError {
+impl ResponseError for BusinessError {
     fn error_response(&self) -> HttpResponse {
         use log::error;
         let mut code;
         match self {
-            BusinessError::ValidationError {field}=> {
+            BusinessError::ValidationError { field } => {
                 code = 1001;
-            },
-            BusinessError::ArgumentError =>{
+            }
+            BusinessError::ArgumentError => {
                 code = 1002;
-            },
-            BusinessError::InternalError {source} =>{
+            }
+            BusinessError::InternalError { source } => {
                 error!("internal error: {:?}", source);
                 code = 1003;
-            },
+            }
         };
-        let resp = Response::err(code,  &self.to_string());
+        let resp = Response::err(code, &self.to_string());
         HttpResponse::BadRequest().json(resp)
     }
 }
 
 impl From<mongodb::error::Error> for BusinessError {
     fn from(e: mongodb::error::Error) -> Self {
-        unimplemented!()
+        BusinessError::InternalError {source:anyhow!(e)}
     }
 }
 
 impl From<bson::ser::Error> for BusinessError {
     fn from(e: bson::ser::Error) -> Self {
-        unimplemented!()
+        BusinessError::InternalError {source:anyhow!(e)}
     }
 }
 
-impl From<bson::oid::Error> for BusinessError {
-    fn from(e: bson::oid::Error) -> Self {
-        unimplemented!()
-    }
-}

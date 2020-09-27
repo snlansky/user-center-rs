@@ -33,6 +33,10 @@ impl<T: Serialize> Response<T> {
 
 impl Response<()> {
     pub fn err(error: i32, message: &str) -> Self {
-        Response { code: error, message: message.to_owned(), data: None }
+        Response {
+            code: error,
+            message: message.to_owned(),
+            data: None,
+        }
     }
 }
