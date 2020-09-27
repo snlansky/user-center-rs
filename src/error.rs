@@ -40,13 +40,12 @@ impl ResponseError for BusinessError {
 
 impl From<mongodb::error::Error> for BusinessError {
     fn from(e: mongodb::error::Error) -> Self {
-        BusinessError::InternalError {source:anyhow!(e)}
+        BusinessError::InternalError { source: anyhow!(e) }
     }
 }
 
 impl From<bson::ser::Error> for BusinessError {
     fn from(e: bson::ser::Error) -> Self {
-        BusinessError::InternalError {source:anyhow!(e)}
+        BusinessError::InternalError { source: anyhow!(e) }
     }
 }
-
