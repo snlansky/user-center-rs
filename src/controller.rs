@@ -12,7 +12,7 @@ pub async fn index(
     web::Path(id): web::Path<String>,
     ctrl: web::Data<sync::Arc<Controller>>,
 ) -> impl Responder {
-    let user = ctrl.user_service.find_by_id(&id).await.unwrap();
+    let user = ctrl.user_service.find_by_id(&id).await?;
 
     Response::ok(user).to_json_result()
 }

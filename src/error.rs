@@ -5,24 +5,38 @@ use crate::model::Response;
 pub type BoxError = Box<dyn std::error::Error + Send + Sync + 'static>;
 pub type Result<T> = std::result::Result<T, BusinessError>;
 
-#[derive(Debug, Error)]
+#[derive(Error, Debug)]
 pub enum BusinessError {
-
+    #[error("Validation error on field: {field}")]
+    ValidationError { field: String },
+    #[error("argument error")]
+    ArgumentError,
+    #[error("An internal error occurred. Please try again later.")]
+    InternalError {
+        #[source]
+        source: anyhow::Error,
+    },
 }
 
-impl BusinessError {
-    fn to_code(&self) -> i32 {
-        0
-    }
 
-    fn to_message(&self) -> String {
-        "msg".to_owned()
-    }
-}
 
 impl error::ResponseError for BusinessError {
     fn error_response(&self) -> HttpResponse {
-        let resp = Response::err(self.to_code(), &self.to_message());
+        use log::error;
+        let mut code;
+        match self {
+            BusinessError::ValidationError {field}=> {
+                code = 1001;
+            },
+            BusinessError::ArgumentError =>{
+                code = 1002;
+            },
+            BusinessError::InternalError {source} =>{
+                error!("internal error: {:?}", source);
+                code = 1003;
+            },
+        };
+        let resp = Response::err(code,  &self.to_string());
         HttpResponse::BadRequest().json(resp)
     }
 }
