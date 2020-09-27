@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct User {
-    #[serde(serialize_with = "serialize_object_id", rename = "id")]
+    #[serde(serialize_with = "serialize_object_id", rename(serialize = "id"))]
     pub _id: Option<ObjectId>,
     pub name: String,
     pub network_id: String,
@@ -20,5 +20,5 @@ pub struct User {
 }
 
 impl User {
-    pub const TABLE_NAME: &'static str = "user";
+    pub const TABLE_NAME: &'static str = "chain";
 }
