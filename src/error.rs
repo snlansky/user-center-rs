@@ -20,9 +20,9 @@ pub enum BusinessError {
 impl ResponseError for BusinessError {
     fn error_response(&self) -> HttpResponse {
         use log::error;
-        let mut code;
+        let code;
         match self {
-            BusinessError::ValidationError { field } => {
+            BusinessError::ValidationError { field: _ } => {
                 code = 1001;
             }
             BusinessError::ArgumentError => {

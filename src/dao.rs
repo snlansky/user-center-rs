@@ -54,7 +54,7 @@ impl Dao {
     where
         T: DeserializeOwned,
     {
-        let oid = ObjectId::with_string(id).map_err(|e| BusinessError::ValidationError {
+        let oid = ObjectId::with_string(id).map_err(|_e| BusinessError::ValidationError {
             field: id.to_owned(),
         })?;
 
