@@ -6,34 +6,35 @@ pub type Result<T> = std::result::Result<T, BusinessError>;
 
 #[derive(Error, Debug)]
 pub enum BusinessError {
-    #[error("Validation error on field: {field}")]
+    #[error("10001#Validation error on field: {field}")]
     ValidationError { field: String },
-    #[error("argument error")]
+    #[error("10002#argument error")]
     ArgumentError,
-    #[error("An internal error occurred. Please try again later.")]
+    #[error("10000#An internal error occurred. Please try again later.")]
     InternalError {
         #[source]
         source: anyhow::Error,
     },
 }
 
+impl BusinessError {
+    fn to_code(&self) -> i32 {
+        let code = &self.to_string()[0..5];
+        code.parse().unwrap_or(-1)
+    }
+
+    fn to_message(&self) -> String {
+        self.to_string()[6..].to_owned()
+    }
+}
+
 impl ResponseError for BusinessError {
     fn error_response(&self) -> HttpResponse {
         use log::error;
-        let code;
-        match self {
-            BusinessError::ValidationError { field: _ } => {
-                code = 1001;
-            }
-            BusinessError::ArgumentError => {
-                code = 1002;
-            }
-            BusinessError::InternalError { source } => {
-                error!("internal error: {:?}", source);
-                code = 1003;
-            }
+        if let BusinessError::InternalError{source} = self {
+            error!("internal error: {:}", source.to_string());
         };
-        let resp = Response::err(code, &self.to_string());
+        let resp = Response::err(self.to_code(), &self.to_message());
         HttpResponse::BadRequest().json(resp)
     }
 }

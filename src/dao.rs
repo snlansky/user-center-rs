@@ -1,17 +1,19 @@
 use crate::error::{BusinessError, Result};
 use bson::oid::ObjectId;
-use mongodb::bson::doc;
-use mongodb::{Client, Collection, Database};
+use mongodb::{Client, Collection, Database, bson::doc, options::{ClientOptions, FindOneOptions}};
 use serde::de::DeserializeOwned;
 use serde::{Serialize, Serializer};
 use std::sync::Mutex;
+use std::time::Duration;
 
 lazy_static! {
     static ref DB: Mutex<Option<Database>> = Mutex::new(None);
 }
 
 pub async fn init(uri: &str) {
-    let client = Client::with_uri_str(uri).await.unwrap();
+    let mut options = ClientOptions::parse(uri).await.unwrap();
+    options.connect_timeout = Some(Duration::from_secs(3));
+    let client = Client::with_options(options).unwrap();
     let mut lock = DB.lock().unwrap();
     *lock = Some(client.database("blockchain_manager"));
 }
@@ -59,7 +61,10 @@ impl Dao {
         })?;
 
         let filter = doc! { "_id":  oid};
-        let data = self.coll.find_one(filter, None).await?;
+        let mut opt = FindOneOptions::default();
+        opt.max_time = Some(Duration::from_secs(3));
+        let data = self.coll.find_one(filter, opt).await?;
+        
         match data {
             Some(d) => {
                 let data: T = bson::from_document(d)
