@@ -8,7 +8,7 @@ pub type Result<T> = std::result::Result<T, BusinessError>;
 pub enum BusinessError {
     #[error("10001#Validation error on field: {field}")]
     ValidationError { field: String },
-    #[error("10002#argument error")]
+    #[error("10002#Argument error")]
     ArgumentError,
     #[error("10000#An internal error occurred. Please try again later.")]
     InternalError {
