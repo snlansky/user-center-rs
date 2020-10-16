@@ -56,15 +56,13 @@ impl Dao {
     where
         T: DeserializeOwned,
     {
-        let oid = ObjectId::with_string(id).map_err(|_e| BusinessError::ValidationError {
-            field: id.to_owned(),
-        })?;
+        let oid = Self::get_object_id(id)?;
 
         let filter = doc! { "_id":  oid};
         let mut opt = FindOneOptions::default();
         opt.max_time = Some(Duration::from_secs(3));
         let data = self.coll.find_one(filter, opt).await?;
-        
+
         match data {
             Some(d) => {
                 let data: T = bson::from_document(d)
@@ -73,5 +71,11 @@ impl Dao {
             }
             None => Ok(None),
         }
+    }
+
+    fn get_object_id(id: &str) -> Result<ObjectId> {
+        ObjectId::with_string(id).map_err(|_|BusinessError::ValidationError {
+            field:id.to_owned()
+        })
     }
 }
