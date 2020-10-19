@@ -1,6 +1,10 @@
 use crate::error::{BusinessError, Result};
-use bson::oid::ObjectId;
-use mongodb::{Client, Collection, Database, bson::doc, options::{ClientOptions, FindOneOptions}};
+use bson::{oid::ObjectId, Document};
+use mongodb::{
+    bson::doc,
+    options::{ClientOptions, CountOptions, FindOneOptions},
+    Client, Collection, Database,
+};
 use serde::de::DeserializeOwned;
 use serde::{Serialize, Serializer};
 use std::sync::Mutex;
@@ -72,10 +76,15 @@ impl Dao {
             None => Ok(None),
         }
     }
+    pub async fn count(&self, filter: impl Into<Option<Document>>) -> Result<i64> {
+        let opt = CountOptions::default();
+        let count = self.coll.count_documents(filter, opt).await?;
+        Ok(count)
+    }
 
     fn get_object_id(id: &str) -> Result<ObjectId> {
-        ObjectId::with_string(id).map_err(|_|BusinessError::ValidationError {
-            field:id.to_owned()
+        ObjectId::with_string(id).map_err(|_| BusinessError::ValidationError {
+            field: id.to_owned(),
         })
     }
 }
