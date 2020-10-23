@@ -13,6 +13,7 @@ mod dao;
 mod error;
 mod model;
 mod service;
+mod config;
 
 fn init_logger() {
     use chrono::Local;
@@ -38,6 +39,8 @@ fn init_logger() {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     init_logger();
+
+    config::init(r#"D:\rust_path\user-center-rs\config-dev.yaml"#);
 
     let uri = "mongodb://root:ul1zXBBdfF@mongo-mongodb:27017/admin?authSource=admin";
     dao::init(uri).await;
