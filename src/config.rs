@@ -12,7 +12,7 @@ pub struct Config {
 }
 
 lazy_static! {
-    pub static ref GLOBLE_CONFIG: RwLock<Config> = RwLock::new(Config {
+    pub static ref GLOBAL_CONFIG: RwLock<Config> = RwLock::new(Config {
         server: Server {
             addr: "0.0.0.0:80".to_owned()
         }
@@ -22,7 +22,7 @@ lazy_static! {
 pub fn init(path: &str) {
     let content = fs::read(path).unwrap();
     let conf = serde_yaml::from_slice(&content).unwrap();
-    let mut w = GLOBLE_CONFIG.write().unwrap();
+    let mut w = GLOBAL_CONFIG.write().unwrap();
     println!("{:#?}", conf);
     *w = conf;
 }
