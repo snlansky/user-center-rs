@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Server {
-    addr: String,
+    pub addr: String,
 }
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Config {
