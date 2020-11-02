@@ -17,6 +17,8 @@ lazy_static! {
 pub async fn init(uri: &str) {
     let mut options = ClientOptions::parse(uri).await.unwrap();
     options.connect_timeout = Some(Duration::from_secs(3));
+    options.heartbeat_freq = Some(Duration::from_secs(3));
+    options.server_selection_timeout = Some(Duration::from_secs(3));
     let client = Client::with_options(options).unwrap();
     let mut lock = DB.lock().unwrap();
     *lock = Some(client.database("blockchain_manager"));

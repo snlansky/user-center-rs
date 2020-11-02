@@ -1,11 +1,2 @@
 server:
   addr: 0.0.0.0:8080
-  rpc: 0.0.0.0:8081
-
-elastic:
-  user: kduser
-  password: TdwYH9-3@q6){zu5
-  nodes:
-    - http://172.20.177.44:9200
-
-
