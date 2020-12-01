@@ -31,7 +31,7 @@ impl BusinessError {
 impl ResponseError for BusinessError {
     fn error_response(&self) -> HttpResponse {
         use log::error;
-        if let BusinessError::InternalError{source} = self {
+        if let BusinessError::InternalError { source } = self {
             error!("internal error: {:}", source.to_string());
         };
         let resp = Response::err(self.to_code(), &self.to_message());

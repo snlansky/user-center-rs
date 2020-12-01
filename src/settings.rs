@@ -3,23 +3,23 @@ use std::sync::RwLock;
 use config::{Config, File};
 use serde::Deserialize;
 
-#[derive(Debug,  Deserialize, Default)]
+#[derive(Debug, Deserialize, Default)]
 pub struct Server {
     pub addr: String,
 }
-#[derive(Debug,  Deserialize, Default)]
-pub struct Redis{
+#[derive(Debug, Deserialize, Default)]
+pub struct Redis {
     pub uri: String,
     pub password: Option<String>,
     pub db: i32,
 }
-#[derive(Debug,   Deserialize, Default)]
-pub struct Mongo{
+#[derive(Debug, Deserialize, Default)]
+pub struct Mongo {
     pub uri: String,
 }
 
 #[derive(Debug, Deserialize, Default)]
-pub struct Dao{
+pub struct Dao {
     pub redis: Redis,
     pub mongo: Mongo,
 }

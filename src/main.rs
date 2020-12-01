@@ -9,10 +9,10 @@ extern crate lazy_static;
 
 mod dao;
 mod error;
+mod handler;
 mod model;
 mod service;
 mod settings;
-mod handler;
 
 fn init_logger() {
     use chrono::Local;
@@ -51,5 +51,4 @@ async fn main() -> std::io::Result<()> {
         .bind(&config.server.addr)?
         .run()
         .await
-    
 }
