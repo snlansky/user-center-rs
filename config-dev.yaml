@@ -1,2 +1,10 @@
 server:
   addr: 0.0.0.0:8080
+
+dao:
+  redis:
+    uri: redis-master:6379
+    password:
+    db: 0
+  mongo:
+    uri: mongodb://root:dJSt9bmxFk@mongo-mongodb:27017/admin?authSource=admin

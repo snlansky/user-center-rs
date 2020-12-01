@@ -1,4 +1,3 @@
-use crate::controller::index;
 use actix_web::{App, HttpServer};
 use log::info;
 use std::sync;
@@ -8,12 +7,12 @@ extern crate anyhow;
 #[macro_use]
 extern crate lazy_static;
 
-mod controller;
 mod dao;
 mod error;
 mod model;
 mod service;
-mod config;
+mod settings;
+mod handler;
 
 fn init_logger() {
     use chrono::Local;
@@ -40,16 +39,17 @@ fn init_logger() {
 async fn main() -> std::io::Result<()> {
     init_logger();
 
-    config::init(r#"D:\rust_path\user-center-rs\config-dev.yaml"#);
+    settings::init("config-dev.yaml");
+    let config = settings::GLOBAL_CONFIG.read().unwrap();
 
-    let uri = "mongodb://root:ul1zXBBdfF@mongo-mongodb:27017/admin?authSource=admin";
-    dao::init(uri).await;
+    dao::init(&config.dao.mongo.uri).await;
 
     let user_service = service::UserService::new();
-    let ctrl = controller::Controller { user_service };
+    let ctrl = handler::Controller { user_service };
     let ctrl = sync::Arc::new(ctrl);
-    HttpServer::new(move || App::new().data(ctrl.clone()).service(index))
-        .bind("0.0.0.0:8081")?
+    HttpServer::new(move || App::new().data(ctrl.clone()).configure(handler::app_config))
+        .bind(&config.server.addr)?
         .run()
         .await
+    
 }
