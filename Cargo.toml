@@ -11,13 +11,13 @@ log = "0.4.11"
 env_logger = "0.8.1"
 chrono = "0.4.19"
 config = "0.10.1"
-actix-web="3.2.0"
+actix-web="3.3.2"
 lazy_static = "1.4.0"
 bson = "1.1.0"
 serde = "1.0.117"
 thiserror = "1.0.21"
 anyhow = "1.0.33"
-futures = { version = "0.3.4", default-features = false, features = ["async-await"]}
+futures = { version = "0.3.8", default-features = false, features = ["async-await"]}
 async-trait = "0.1.42"
 
 [dependencies.mongodb]

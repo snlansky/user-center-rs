@@ -92,6 +92,7 @@ impl Dao {
             None => Ok(None),
         }
     }
+
     pub async fn count(&self, filter: impl Into<Option<Document>>) -> Result<i64> {
         let opt = CountOptions::default();
         let count = self.coll.count_documents(filter, opt).await?;

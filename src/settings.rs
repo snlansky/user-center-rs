@@ -13,6 +13,7 @@ pub struct Redis {
     pub password: Option<String>,
     pub db: i32,
 }
+
 #[derive(Debug, Deserialize, Default)]
 pub struct Mongo {
     pub uri: String,
@@ -23,6 +24,7 @@ pub struct Dao {
     pub redis: Redis,
     pub mongo: Mongo,
 }
+
 #[derive(Debug, Deserialize, Default)]
 pub struct Settings {
     pub server: Server,
