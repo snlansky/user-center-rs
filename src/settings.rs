@@ -38,9 +38,7 @@ pub fn init(path: &str) {
     config.merge(File::with_name(path)).unwrap();
 
     let s: Settings = config.try_into().unwrap();
-    // let content = fs::read(path).unwrap();
-    // let conf = serde_yaml::from_slice(&content).unwrap();
+    println!("{:#?}", s);
     let mut w = GLOBAL_CONFIG.write().unwrap();
-    // println!("{:#?}", conf);
     *w = s;
 }

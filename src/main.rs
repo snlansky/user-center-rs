@@ -1,4 +1,4 @@
-use actix_web::{App, HttpServer};
+use actix_web::{App, HttpServer, middleware};
 use log::info;
 use std::sync;
 
@@ -44,10 +44,10 @@ async fn main() -> std::io::Result<()> {
 
     dao::init(&config.dao.mongo.uri).await;
 
-    let user_service = service::UserService::new();
-    let ctrl = handler::Controller { user_service };
+    let chain_service = service::ChainService::new();
+    let ctrl = handler::Controller { chain_service };
     let ctrl = sync::Arc::new(ctrl);
-    HttpServer::new(move || App::new().data(ctrl.clone()).configure(handler::app_config))
+    HttpServer::new(move || App::new().data(ctrl.clone()).wrap(middleware::Logger::default()).configure(handler::app_config))
         .bind(&config.server.addr)?
         .run()
         .await

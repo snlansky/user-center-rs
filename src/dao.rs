@@ -1,12 +1,15 @@
 use crate::error::{BusinessError, Result};
-use bson::{oid::ObjectId, Document};
+use bson::{
+    oid::{self, ObjectId},
+    Document,
+};
 use mongodb::{
     bson::doc,
     options::{ClientOptions, CountOptions, FindOneOptions},
     Client, Collection, Database,
 };
 use serde::de::DeserializeOwned;
-use serde::{Serialize, Serializer};
+use serde::{Deserialize, Serialize, Serializer};
 use std::sync::Mutex;
 use std::time::Duration;
 
@@ -49,13 +52,25 @@ impl Dao {
         Dao { coll }
     }
 
-    pub async fn save<T>(&self, data: &T) -> Result<()>
+    pub async fn save<T>(&self, data: &T) -> Result<oid::ObjectId>
     where
         T: Serialize,
     {
-        let data = bson::to_bson(data)?.as_document().unwrap().to_owned();
-        self.coll.insert_one(data, None).await?;
-        Ok(())
+        let doc = bson::to_bson(data)?.as_document().unwrap().to_owned();
+        let ret = self.coll.insert_one(doc, None).await?;
+        let id = ret
+            .inserted_id
+            .as_object_id()
+            .expect("Retrieved _id should have been of type ObjectId");
+        Ok(id.to_owned())
+    }
+
+    pub async fn save_data<T>(&self, data: T) -> Result<MongoObject<T>>
+    where
+        T: Serialize,
+    {
+        let id = self.save(&data).await?;
+        Ok(MongoObject{_id: Some(id), data: data})
     }
 
     pub async fn find_by_id<T>(&self, id: &str) -> Result<Option<T>>
@@ -89,4 +104,12 @@ impl Dao {
             field: id.to_owned(),
         })
     }
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct MongoObject<T> {
+    #[serde(serialize_with = "serialize_object_id", rename(serialize = "id"))]
+    pub _id: Option<ObjectId>,
+    #[serde(flatten)]
+    pub data: T,
 }

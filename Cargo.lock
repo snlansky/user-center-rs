@@ -305,7 +305,6 @@ dependencies = [
  "log",
  "mongodb",
  "serde 1.0.117",
- "serde_yaml",
  "thiserror",
 ]
 
@@ -2102,18 +2101,6 @@ dependencies = [
  "proc-macro2 1.0.24",
  "quote 1.0.7",
  "syn 1.0.48",
-]
-
-[[package]]
-name = "serde_yaml"
-version = "0.8.13"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ae3e2dd40a7cdc18ca80db804b7f461a39bb721160a85c9a1fa30134bf3c02a5"
-dependencies = [
- "dtoa",
- "linked-hash-map 0.5.3",
- "serde 1.0.117",
- "yaml-rust",
 ]
 
 [[package]]
