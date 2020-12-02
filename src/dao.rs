@@ -1,6 +1,6 @@
 use crate::error::{BusinessError, Result};
 use bson::{
-    oid::{self, ObjectId},
+    oid::ObjectId,
     Document,
 };
 use mongodb::{
@@ -52,7 +52,7 @@ impl Dao {
         Dao { coll }
     }
 
-    pub async fn save<T>(&self, data: &T) -> Result<oid::ObjectId>
+    pub async fn save<T>(&self, data: &T) -> Result<ObjectId>
     where
         T: Serialize,
     {
@@ -71,8 +71,8 @@ impl Dao {
     {
         let id = self.save(&data).await?;
         Ok(MongoObject {
-            _id: Some(id),
-            data: data,
+            id: Some(id),
+            data,
         })
     }
 
@@ -111,8 +111,8 @@ impl Dao {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct MongoObject<T> {
-    #[serde(serialize_with = "serialize_object_id", rename(serialize = "id"))]
-    pub _id: Option<ObjectId>,
+    #[serde(serialize_with = "serialize_object_id", rename(deserialize = "_id"))]
+    pub id: Option<ObjectId>,
     #[serde(flatten)]
     pub data: T,
 }
