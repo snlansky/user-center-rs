@@ -10,6 +10,7 @@ use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize, Serializer};
 use std::sync::Mutex;
 use std::time::Duration;
+use mongodb::options::FindOptions;
 
 lazy_static! {
     static ref DB: Mutex<Option<Database>> = Mutex::new(None);
@@ -97,11 +98,15 @@ impl Dao {
         Ok(count)
     }
 
-    pub async fn list<T>(&self, filter: impl Into<Option<Document>>) -> Result<Vec<MongoObject<T>>>
+    pub async fn list<T>(&self, filter: impl Into<Option<Document>>, limit: i64, skip: i64) -> Result<Vec<MongoObject<T>>>
     where
         T: DeserializeOwned + Send,
     {
-        let mut cursor = self.coll.find(filter, None).await?;
+        let mut opt = FindOptions::default();
+        opt.limit = Some(limit);
+        opt.skip = Some(skip);
+
+        let mut cursor = self.coll.find(filter, opt).await?;
         let list = cursor.as_vec().await?;
         Ok(list)
     }

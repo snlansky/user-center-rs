@@ -27,6 +27,6 @@ impl ChainService {
         limit: i32,
     ) -> Result<(Vec<dao::MongoObject<model::Chain>>, i64)> {
         let doc = doc! {};
-        Ok((self.op.list(doc).await?, 0))
+        Ok((self.op.list(doc,  limit as i64, page as i64).await?, 0))
     }
 }
