@@ -30,7 +30,7 @@ async fn create_chain(
 ) -> impl Responder {
     let req = req.into_inner();
 
-    let mut chain = model::Chain {
+    let chain = model::Chain {
         name: req.name,
         network_id: req.network_id,
         consensus: req.consensus,
