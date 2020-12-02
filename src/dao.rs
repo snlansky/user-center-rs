@@ -1,6 +1,7 @@
 use crate::error::{BusinessError, Result};
-use bson::{oid::ObjectId, Bson, Document};
+use bson::{oid::ObjectId, Document};
 use futures::StreamExt;
+use mongodb::options::FindOptions;
 use mongodb::{
     bson::doc,
     options::{ClientOptions, CountOptions, FindOneOptions},
@@ -10,7 +11,6 @@ use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize, Serializer};
 use std::sync::Mutex;
 use std::time::Duration;
-use mongodb::options::FindOptions;
 
 lazy_static! {
     static ref DB: Mutex<Option<Database>> = Mutex::new(None);
@@ -98,7 +98,12 @@ impl Dao {
         Ok(count)
     }
 
-    pub async fn list<T>(&self, filter: impl Into<Option<Document>>, limit: i64, skip: i64) -> Result<Vec<MongoObject<T>>>
+    pub async fn list<T>(
+        &self,
+        filter: impl Into<Option<Document>>,
+        limit: i64,
+        skip: i64,
+    ) -> Result<Vec<MongoObject<T>>>
     where
         T: DeserializeOwned + Send,
     {

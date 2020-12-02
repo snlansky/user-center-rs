@@ -1,4 +1,4 @@
-use crate::model::{self, RequestCreateChain, Response, ResponseList};
+use crate::model::{self, Response, ResponseList};
 use crate::service;
 use actix_web::{get, post, web, Responder};
 use std::sync;
