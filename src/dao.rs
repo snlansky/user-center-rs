@@ -1,14 +1,11 @@
 use crate::error::{BusinessError, Result};
-use bson::{oid::ObjectId, Document};
-use mongodb::{
-    bson::doc,
-    options::{ClientOptions, CountOptions, FindOneOptions},
-    Client, Collection, Database,
-};
+use bson::{oid::ObjectId, Document, Bson};
+use mongodb::{bson::doc, options::{ClientOptions, CountOptions, FindOneOptions}, Client, Collection, Database, Cursor};
 use serde::de::DeserializeOwned;
 use serde::{Deserialize, Serialize, Serializer};
 use std::sync::Mutex;
 use std::time::Duration;
+use futures::StreamExt;
 
 lazy_static! {
     static ref DB: Mutex<Option<Database>> = Mutex::new(None);
@@ -96,6 +93,26 @@ impl Dao {
         Ok(count)
     }
 
+    pub async fn list<T>(&self,filter: impl Into<Option<Document>> ) -> Result<Vec<MongoObject<T>>>
+        where
+            T: DeserializeOwned + Send,
+    {
+        let mut cursor = self.coll.find(filter, None).await?;
+        // let mut list = vec![];
+        // while let Some(result) = cursor.next().await{
+        //     match result {
+        //         Ok(doc) => {
+        //             let data = bson::from_document(doc)
+        //                 .map_err(|e| BusinessError::InternalError { source: anyhow!(e) })?;
+        //             list.push(data);
+        //         }
+        //         Err(e) => return Err(e.into()),
+        //     }
+        // }
+        let list = cursor.as_vec().await?;
+        Ok(list)
+    }
+
     fn get_object_id(id: &str) -> Result<ObjectId> {
         ObjectId::with_string(id).map_err(|_| BusinessError::ValidationError {
             field: id.to_owned(),
@@ -109,4 +126,27 @@ pub struct MongoObject<T> {
     pub id: Option<ObjectId>,
     #[serde(flatten)]
     pub data: T,
+}
+
+#[async_trait::async_trait]
+pub trait CursorAsVec {
+    async fn as_vec<T: DeserializeOwned + Send>(&mut self) -> Result<Vec<T>>;
+}
+
+#[async_trait::async_trait]
+impl CursorAsVec for Cursor {
+    async fn as_vec<T: DeserializeOwned + Send>(&mut self) -> Result<Vec<T>> {
+        let mut list = vec![];
+        while let Some(result) = self.next().await{
+            match result {
+                Ok(doc) => {
+                    let data = bson::from_document(doc)
+                        .map_err(|e| BusinessError::InternalError { source: anyhow!(e) })?;
+                    list.push(data);
+                }
+                Err(e) => return Err(e.into()),
+            }
+        }
+        Ok(list)
+    }
 }

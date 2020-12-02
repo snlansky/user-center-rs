@@ -1,5 +1,5 @@
 use crate::dao;
-use crate::error::Result;
+use crate::error::{Result, BusinessError};
 use crate::model;
 
 pub struct ChainService {
@@ -19,5 +19,10 @@ impl ChainService {
 
     pub async fn save(&self, chain: model::Chain) -> Result<dao::MongoObject<model::Chain>> {
         self.op.save_data(chain).await
+    }
+
+    pub async fn get_list(&self, page: i32, limit: i32) -> Result<(Vec<dao::MongoObject<model::Chain>>, i64)> {
+        let doc = doc! {};
+        Ok((self.op.list(doc).await?, 0))
     }
 }

@@ -3,6 +3,8 @@ use log::info;
 use std::sync;
 
 #[macro_use]
+extern crate bson;
+#[macro_use]
 extern crate anyhow;
 #[macro_use]
 extern crate lazy_static;

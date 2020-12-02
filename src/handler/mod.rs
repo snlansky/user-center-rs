@@ -1,4 +1,4 @@
-use crate::model::{self, RequestCreateChain, Response};
+use crate::model::{self, RequestCreateChain, Response, ResponseList};
 use crate::service;
 use actix_web::{get, post, web, Responder};
 use std::sync;
@@ -6,7 +6,7 @@ use std::sync;
 pub fn app_config(config: &mut web::ServiceConfig) {
     config
         .service(index)
-        .service(web::scope("/api/v1").service(create_chain));
+        .service(web::scope("/api/v1").service(create_chain).service(create_list));
 }
 
 pub struct Controller {
@@ -23,9 +23,21 @@ async fn index(
     Response::ok(user).to_json_result()
 }
 
+#[get("/chains")]
+async fn create_list(
+    req: web::Query<model::PageQuery>,
+    ctrl: web::Data<sync::Arc<Controller>>,
+) -> impl Responder {
+    let req = req.into_inner();
+    let (list, total) =  ctrl.chain_service.get_list(req.page, req.limit).await?;
+    let req = ResponseList{total, list};
+    Response::ok(req).to_json_result()
+}
+
+
 #[post("/chains/create")]
 async fn create_chain(
-    req: web::Json<RequestCreateChain>,
+    req: web::Json<model::RequestCreateChain>,
     ctrl: web::Data<sync::Arc<Controller>>,
 ) -> impl Responder {
     let req = req.into_inner();

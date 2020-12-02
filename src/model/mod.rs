@@ -42,3 +42,11 @@ impl Response<()> {
         }
     }
 }
+#[derive(Deserialize, Serialize)]
+pub struct ResponseList<T>
+    where
+        T: Serialize,
+{
+    pub total :i64,
+    pub list  :Vec<T>,
+}

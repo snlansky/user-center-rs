@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
 pub struct RequestCreateChain {
@@ -9,4 +9,10 @@ pub struct RequestCreateChain {
     pub node_count: i32,
     pub tls_enabled: Option<String>,
     pub description: Option<String>,
+}
+
+#[derive(Deserialize, Serialize)]
+pub struct PageQuery {
+    pub page: i32,
+    pub limit: i32,
 }
