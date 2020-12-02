@@ -1,8 +1,5 @@
 use crate::error::{BusinessError, Result};
-use bson::{
-    oid::ObjectId,
-    Document,
-};
+use bson::{oid::ObjectId, Document};
 use mongodb::{
     bson::doc,
     options::{ClientOptions, CountOptions, FindOneOptions},
@@ -70,10 +67,7 @@ impl Dao {
         T: Serialize,
     {
         let id = self.save(&data).await?;
-        Ok(MongoObject {
-            id: Some(id),
-            data,
-        })
+        Ok(MongoObject { id: Some(id), data })
     }
 
     pub async fn find_by_id<T>(&self, id: &str) -> Result<Option<T>>
