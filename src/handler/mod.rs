@@ -30,7 +30,7 @@ async fn create_chain(
 ) -> impl Responder {
     let req = req.into_inner();
 
-    let mut chain = model::Chain{
+    let mut chain = model::Chain {
         name: req.name,
         network_id: req.network_id,
         consensus: req.consensus,
@@ -41,9 +41,7 @@ async fn create_chain(
         tls_enabled: req.tls_enabled,
         create_time: chrono::Utc::now().timestamp(),
         description: req.description,
-
     };
-
 
     let ret = ctrl.chain_service.save(chain).await?;
     Response::ok(ret).to_json_result()

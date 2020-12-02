@@ -70,7 +70,10 @@ impl Dao {
         T: Serialize,
     {
         let id = self.save(&data).await?;
-        Ok(MongoObject{_id: Some(id), data: data})
+        Ok(MongoObject {
+            _id: Some(id),
+            data: data,
+        })
     }
 
     pub async fn find_by_id<T>(&self, id: &str) -> Result<Option<T>>

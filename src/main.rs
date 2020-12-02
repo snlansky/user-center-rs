@@ -1,4 +1,4 @@
-use actix_web::{App, HttpServer, middleware};
+use actix_web::{middleware, App, HttpServer};
 use log::info;
 use std::sync;
 
@@ -47,8 +47,13 @@ async fn main() -> std::io::Result<()> {
     let chain_service = service::ChainService::new();
     let ctrl = handler::Controller { chain_service };
     let ctrl = sync::Arc::new(ctrl);
-    HttpServer::new(move || App::new().data(ctrl.clone()).wrap(middleware::Logger::default()).configure(handler::app_config))
-        .bind(&config.server.addr)?
-        .run()
-        .await
+    HttpServer::new(move || {
+        App::new()
+            .data(ctrl.clone())
+            .wrap(middleware::Logger::default())
+            .configure(handler::app_config)
+    })
+    .bind(&config.server.addr)?
+    .run()
+    .await
 }
