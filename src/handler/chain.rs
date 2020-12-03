@@ -15,7 +15,6 @@ pub async fn index(
     Response::ok(user).to_json_result()
 }
 
-#[get("/chains")]
 pub async fn list_chain(
     req: web::Query<model::PageQuery>,
     ctrl: web::Data<sync::Arc<Controller>>,
@@ -26,7 +25,6 @@ pub async fn list_chain(
     Response::ok(req).to_json_result()
 }
 
-#[post("/chains/create")]
 pub async fn create_chain(
     req: web::Json<model::RequestCreateChain>,
     ctrl: web::Data<sync::Arc<Controller>>,
@@ -50,7 +48,6 @@ pub async fn create_chain(
     Response::ok(ret).to_json_result()
 }
 
-#[delete("/chains/{id}")]
 pub async fn delete_chain(
     web::Path(id): web::Path<String>,
     ctrl: web::Data<sync::Arc<Controller>>,
@@ -63,7 +60,6 @@ pub async fn delete_chain(
     Response::ok(SUCCESS_RESPONSE).to_json_result()
 }
 
-#[post("/chains/update")]
 pub async fn update_chain(
     req: web::Json<model::RequestUpdateChain>,
     ctrl: web::Data<sync::Arc<Controller>>,
