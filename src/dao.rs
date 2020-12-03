@@ -1,5 +1,6 @@
 use crate::error::{BusinessError, Result};
 use bson::{oid::ObjectId, Document};
+use core::fmt;
 use futures::StreamExt;
 use mongodb::options::FindOptions;
 use mongodb::{
@@ -8,7 +9,7 @@ use mongodb::{
     Client, Collection, Cursor, Database,
 };
 use serde::de::DeserializeOwned;
-use serde::{Deserialize, Serialize, Serializer};
+use serde::{Serialize, Deserialize, Serializer, Deserializer, de};
 use std::sync::Mutex;
 use std::time::Duration;
 
@@ -39,6 +40,34 @@ where
         Some(v) => s.serialize_str(&v),
         None => s.serialize_none(),
     }
+}
+
+#[allow(dead_code)] 
+pub fn deserialize_object_id<'de, D>(deserializer: D) -> std::result::Result<Option<ObjectId>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    struct JsonOptionObjectIdVisitor;
+
+    impl<'de> de::Visitor<'de> for JsonOptionObjectIdVisitor {
+        type Value = Option<ObjectId>;
+
+        fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+            formatter.write_str("an object id hash value")
+        }
+
+        fn visit_str<E>(self, v: &str) -> std::result::Result<Self::Value, E>
+        where
+            E: de::Error,
+        {
+            if v.is_empty() {
+                return Ok(None);
+            }
+            Ok(ObjectId::with_string(v).ok())
+        }
+    }
+
+    deserializer.deserialize_any(JsonOptionObjectIdVisitor)
 }
 
 pub struct Dao {
