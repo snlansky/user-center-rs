@@ -3,7 +3,7 @@ use log::info;
 use crate::dao;
 use crate::error::Result;
 
-use crate::dao::{MongoObject, Dao};
+use crate::dao::{Dao, MongoObject};
 use crate::model::Chain;
 
 pub struct ChainService {
@@ -25,11 +25,7 @@ impl ChainService {
         self.op.save_data(chain).await
     }
 
-    pub async fn get_list(
-        &self,
-        page: i64,
-        limit: i64,
-    ) -> Result<(Vec<MongoObject<Chain>>, i64)> {
+    pub async fn get_list(&self, page: i64, limit: i64) -> Result<(Vec<MongoObject<Chain>>, i64)> {
         let doc = doc! {};
         let list = self.op.list(doc.clone(), limit, page).await?;
         let count = self.op.count(doc).await?;

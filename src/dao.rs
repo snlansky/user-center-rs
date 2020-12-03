@@ -84,7 +84,7 @@ impl Dao {
 
     pub async fn update<T>(&self, data: &MongoObject<T>) -> Result<()>
     where
-        T: Serialize
+        T: Serialize,
     {
         let filter = doc! {"_id": data.id.as_ref().unwrap()};
         let doc = bson::to_bson(&data.data)?.as_document().unwrap().to_owned();
