@@ -16,14 +16,14 @@ lazy_static! {
     static ref DB: Mutex<Option<Database>> = Mutex::new(None);
 }
 
-pub async fn init(uri: &str) {
+pub async fn init(uri: &str, db: &str) {
     let mut options = ClientOptions::parse(uri).await.unwrap();
     options.connect_timeout = Some(Duration::from_secs(3));
     options.heartbeat_freq = Some(Duration::from_secs(3));
     options.server_selection_timeout = Some(Duration::from_secs(3));
     let client = Client::with_options(options).unwrap();
     let mut lock = DB.lock().unwrap();
-    *lock = Some(client.database("blockchain_manager"));
+    *lock = Some(client.database(db));
 }
 
 pub fn collection(name: &str) -> Collection {
@@ -70,6 +70,16 @@ impl Dao {
     {
         let id = self.save(&data).await?;
         Ok(MongoObject { id: Some(id), data })
+    }
+
+    pub async fn delete(&self, id: &str) -> Result<i64> {
+        let oid = Self::get_object_id(id)?;
+
+        let filter = doc! { "_id":  oid};
+
+        let res = self.coll.delete_one(filter, None).await?;
+        
+        Ok(res.deleted_count)
     }
 
     pub async fn find_by_id<T>(&self, id: &str) -> Result<Option<T>>

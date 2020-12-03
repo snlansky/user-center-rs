@@ -13,6 +13,6 @@ pub struct RequestCreateChain {
 
 #[derive(Deserialize, Serialize)]
 pub struct PageQuery {
-    pub page: i32,
-    pub limit: i32,
+    pub page: i64,
+    pub limit: i64,
 }

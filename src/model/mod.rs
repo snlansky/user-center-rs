@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 
 const SUCCESS_CODE: i32 = 0;
 const SUCCESS_MSG: &str = "ok";
+pub const SUCCESS_RESPONSE: &str = "success";
 
 #[derive(Deserialize, Serialize)]
 pub struct Response<T>

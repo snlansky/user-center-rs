@@ -1,3 +1,5 @@
+use log::info;
+
 use crate::dao;
 use crate::error::Result;
 use crate::model;
@@ -23,10 +25,18 @@ impl ChainService {
 
     pub async fn get_list(
         &self,
-        page: i32,
-        limit: i32,
+        page: i64,
+        limit: i64,
     ) -> Result<(Vec<dao::MongoObject<model::Chain>>, i64)> {
         let doc = doc! {};
-        Ok((self.op.list(doc, limit as i64, page as i64).await?, 0))
+        let list = self.op.list(doc.clone(), limit, page).await?;
+        let count = self.op.count(doc).await?;
+        Ok((list, count))
+    }
+
+    pub async fn delete(&self, id: &str) -> Result<()> {
+        let res = self.op.delete(id).await?;
+        info!("delete {:}", res);
+        Ok(())
     }
 }

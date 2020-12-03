@@ -50,3 +50,4 @@ impl From<bson::ser::Error> for BusinessError {
         BusinessError::InternalError { source: anyhow!(e) }
     }
 }
+
