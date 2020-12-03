@@ -1,4 +1,7 @@
-use crate::{model::{self, Response}, service};
+use crate::{
+    model::{self, Response},
+    service,
+};
 use actix_web::{web, Responder};
 
 mod chain;
@@ -27,5 +30,5 @@ pub struct Controller {
 
 pub async fn login(req: web::Json<model::Login>, session: Session) -> impl Responder {
     guard::set_uid(session, req.into_inner().username);
-    Response::ok(SUCCESS_RESPONSE).to_json_result() 
+    Response::ok(SUCCESS_RESPONSE).to_json_result()
 }

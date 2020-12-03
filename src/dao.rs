@@ -9,7 +9,7 @@ use mongodb::{
     Client, Collection, Cursor, Database,
 };
 use serde::de::DeserializeOwned;
-use serde::{Serialize, Deserialize, Serializer, Deserializer, de};
+use serde::{de, Deserialize, Deserializer, Serialize, Serializer};
 use std::sync::Mutex;
 use std::time::Duration;
 
@@ -42,8 +42,10 @@ where
     }
 }
 
-#[allow(dead_code)] 
-pub fn deserialize_object_id<'de, D>(deserializer: D) -> std::result::Result<Option<ObjectId>, D::Error>
+#[allow(dead_code)]
+pub fn deserialize_object_id<'de, D>(
+    deserializer: D,
+) -> std::result::Result<Option<ObjectId>, D::Error>
 where
     D: Deserializer<'de>,
 {

@@ -16,7 +16,7 @@ impl Guard for SessionGuard {
     }
 }
 
-#[allow(dead_code)] 
+#[allow(dead_code)]
 pub fn get_uid(session: Session) -> String {
     session.get::<String>(UID_TAG).unwrap().unwrap()
 }
