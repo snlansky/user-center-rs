@@ -10,7 +10,7 @@ pub fn app_config(config: &mut web::ServiceConfig) {
             .route("/chains", web::get().to(list_chain))
             .route("/chains/create", web::post().to(create_chain))
             .route("/chains/update", web::post().to(update_chain))
-            .route("/chains/{id}", web::delete().to(delete_chain))
+            .route("/chains/{id}", web::delete().to(delete_chain)),
     );
 }
 
