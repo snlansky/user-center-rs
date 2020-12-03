@@ -1,6 +1,6 @@
-use actix_web::guard::Guard;
-use actix_web::dev::RequestHead;
 use actix_session::{Session, UserSession};
+use actix_web::dev::RequestHead;
+use actix_web::guard::Guard;
 use log::info;
 
 pub const UID: &str = "uid";
@@ -9,8 +9,8 @@ pub struct SessionGuard;
 
 impl Guard for SessionGuard {
     fn check(&self, request: &RequestHead) -> bool {
-        let session :Session = request.get_session();
-        let user =  session.get::<String>(UID).unwrap();
+        let session: Session = request.get_session();
+        let user = session.get::<String>(UID).unwrap();
         info!("user {:?}", user);
         user.is_some()
     }
