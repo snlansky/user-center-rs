@@ -9,7 +9,7 @@ pub struct Chain {
     pub node_count: i32,
     pub account: String,
     pub team: String,
-    pub tls_enabled: Option<String>,
+    pub tls_enabled: String,
     pub create_time: i64,
     pub description: Option<String>,
 }

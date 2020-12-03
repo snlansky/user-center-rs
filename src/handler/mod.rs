@@ -9,7 +9,8 @@ pub fn app_config(config: &mut web::ServiceConfig) {
         web::scope("/api/v1")
             .service(create_chain)
             .service(list_chain)
-            .service(delete_chain),
+            .service(delete_chain)
+            .service(update_chain),
     );
 }
 

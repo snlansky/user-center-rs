@@ -82,6 +82,16 @@ impl Dao {
         Ok(res.deleted_count)
     }
 
+    pub async fn update<T>(&self, data: &MongoObject<T>) -> Result<()>
+    where
+        T: Serialize
+    {
+        let filter = doc! {"_id": data.id.as_ref().unwrap()};
+        let doc = bson::to_bson(&data.data)?.as_document().unwrap().to_owned();
+        self.coll.update_one(filter, doc, None).await?;
+        Ok(())
+    }
+
     pub async fn find_by_id<T>(&self, id: &str) -> Result<Option<T>>
     where
         T: DeserializeOwned,

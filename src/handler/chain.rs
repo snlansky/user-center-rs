@@ -62,3 +62,20 @@ pub async fn delete_chain(
         .await?;
     Response::ok(SUCCESS_RESPONSE).to_json_result()
 }
+
+#[post("/chains/update")]
+pub async fn update_chain(
+    req: web::Json<model::RequestUpdateChain>,
+    ctrl: web::Data<sync::Arc<Controller>>,
+) -> impl Responder {
+    let chain = ctrl.chain_service.find_by_id(&req.chain_id).await?;
+    let mut chain = chain.ok_or_else(|| BusinessError::ArgumentError)?;
+
+    chain.data.name = req.name.clone();
+    chain.data.node_count = req.node_count;
+    chain.data.tls_enabled = req.tls_enabled.clone();
+    chain.data.description = req.description.clone();
+
+    ctrl.chain_service.update(&chain).await?;
+    Response::ok(chain).to_json_result()
+}

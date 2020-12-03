@@ -7,7 +7,16 @@ pub struct RequestCreateChain {
     pub consensus: String,
     pub consortium_id: Option<String>,
     pub node_count: i32,
-    pub tls_enabled: Option<String>,
+    pub tls_enabled: String,
+    pub description: Option<String>,
+}
+
+#[derive(Deserialize)]
+pub struct RequestUpdateChain {
+    pub chain_id: String,
+    pub name: String,
+    pub node_count: i32,
+    pub tls_enabled: String,
     pub description: Option<String>,
 }
 
