@@ -142,14 +142,9 @@ impl CursorAsVec for Cursor {
     async fn as_vec<T: DeserializeOwned + Send>(&mut self) -> Result<Vec<T>> {
         let mut list = vec![];
         while let Some(result) = self.next().await {
-            match result {
-                Ok(doc) => {
-                    let data = bson::from_document(doc)
-                        .map_err(|e| BusinessError::InternalError { source: anyhow!(e) })?;
-                    list.push(data);
-                }
-                Err(e) => return Err(e.into()),
-            }
+            let data = bson::from_document(result?)
+                .map_err(|e| BusinessError::InternalError { source: anyhow!(e) })?;
+            list.push(data);
         }
         Ok(list)
     }
