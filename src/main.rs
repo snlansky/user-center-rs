@@ -1,6 +1,7 @@
 use actix_web::{middleware, App, HttpServer};
 use log::info;
 use std::sync;
+use actix_session::CookieSession;
 
 #[macro_use]
 extern crate bson;
@@ -15,6 +16,7 @@ mod handler;
 mod model;
 mod service;
 mod settings;
+mod mdw;
 
 fn init_logger() {
     use chrono::Local;
@@ -53,6 +55,8 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .data(ctrl.clone())
             .wrap(middleware::Logger::default())
+            .wrap(CookieSession::signed(&[0; 32]) // <- create cookie based session middleware
+                .secure(false))
             .configure(handler::app_config)
     })
     .bind(&config.server.addr)?

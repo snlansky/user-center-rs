@@ -25,3 +25,10 @@ pub struct PageQuery {
     pub page: i64,
     pub limit: i64,
 }
+
+#[derive(Deserialize, Serialize)]
+pub struct Login {
+    pub username: String,
+    pub password: String,
+}
+

@@ -1,12 +1,22 @@
-use crate::service;
+use crate::{service, model};
 use actix_web::{delete, get, post, web, Responder};
 
 mod chain;
+mod guard;
 use chain::*;
+use actix_session::Session;
+
 
 pub fn app_config(config: &mut web::ServiceConfig) {
-    config.service(index).service(
+    config
+        .service(
+            web::scope("/api/public")
+                .route("/login", web::post().to(login))
+        )
+        .service(index)
+        .service(
         web::scope("/api/v1")
+            .guard(guard::SessionGuard{})
             .route("/chains", web::get().to(list_chain))
             .route("/chains/create", web::post().to(create_chain))
             .route("/chains/update", web::post().to(update_chain))
@@ -16,4 +26,12 @@ pub fn app_config(config: &mut web::ServiceConfig) {
 
 pub struct Controller {
     pub chain_service: service::ChainService,
+}
+
+pub async fn login(
+    req: web::Json<model::Login>,
+    session: Session,
+) -> impl Responder {
+   guard::set_uid(session, req.into_inner().username);
+   "ok"
 }
