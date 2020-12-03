@@ -2,11 +2,10 @@ use crate::model::{self, Response, ResponseList, SUCCESS_RESPONSE};
 
 use crate::error::BusinessError;
 use crate::handler::Controller;
-use actix_web::{delete, get, post, web, Responder};
+use actix_web::{web, Responder};
 use std::sync;
 
-#[get("/{id}")]
-pub async fn index(
+pub async fn query_chain(
     web::Path(id): web::Path<String>,
     ctrl: web::Data<sync::Arc<Controller>>,
 ) -> impl Responder {
