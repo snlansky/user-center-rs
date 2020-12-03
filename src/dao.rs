@@ -78,7 +78,7 @@ impl Dao {
         let filter = doc! { "_id":  oid};
 
         let res = self.coll.delete_one(filter, None).await?;
-        
+
         Ok(res.deleted_count)
     }
 

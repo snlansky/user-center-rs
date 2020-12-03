@@ -1,6 +1,5 @@
-
 use crate::service;
-use actix_web::{get, post,delete, web, Responder};
+use actix_web::{delete, get, post, web, Responder};
 
 mod chain;
 use chain::*;

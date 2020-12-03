@@ -1,9 +1,9 @@
 use crate::model::{self, Response, ResponseList, SUCCESS_RESPONSE};
 
-use actix_web::{get, post,delete, web, Responder};
-use std::sync;
-use crate::handler::Controller;
 use crate::error::BusinessError;
+use crate::handler::Controller;
+use actix_web::{delete, get, post, web, Responder};
+use std::sync;
 
 #[get("/{id}")]
 pub async fn index(
@@ -56,7 +56,9 @@ pub async fn delete_chain(
     ctrl: web::Data<sync::Arc<Controller>>,
 ) -> impl Responder {
     let chain = ctrl.chain_service.find_by_id(&id).await?;
-    let chain = chain.ok_or_else(||BusinessError::ArgumentError)?;
-    ctrl.chain_service.delete(&chain.id.unwrap().to_hex()).await?;
+    let chain = chain.ok_or_else(|| BusinessError::ArgumentError)?;
+    ctrl.chain_service
+        .delete(&chain.id.unwrap().to_hex())
+        .await?;
     Response::ok(SUCCESS_RESPONSE).to_json_result()
 }
