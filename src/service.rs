@@ -2,7 +2,7 @@ use log::info;
 
 use crate::dao;
 use crate::error::Result;
-use crate::model;
+
 use crate::dao::{MongoObject, Dao};
 use crate::model::Chain;
 
