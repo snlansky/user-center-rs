@@ -51,11 +51,23 @@ help:
 	@echo "  - make clean             清理.build"
 	@echo
 
-buildenv:
+clean:
+	@rm -rf target
+
+prepare:
+	@export cargo vendor; cargo fmt; cargo clippy
+
+buildenv: clean
 	@docker build -t $(DOCKER_RUN_RUST_IMAGE) image/ -f image/Dockerfile.env
 
+depmac: 
+	@brew install libpq; brew reinstall sqlite; brew install mysql-client; brew install mysql-connector-c 
+
+depapt:
+	@sudo apt-get install libmysqlclient-dev libsqlite3-dev libpq-dev
+	
 dep:
-	@export cargo vendor; cargo fmt; cargo clippy
+	@cargo install diesel_cli
 
 build: buildenv
 	$(DRUN) \
@@ -72,8 +84,5 @@ deploy-test:
 
 deploy-prod:
 	$(call deploy, $(CONFIG_PROD))
-
-clean:
-	@rm -rf target
 
 .PHONY: dep build deploy-test deploy-prod clean

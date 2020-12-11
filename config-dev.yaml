@@ -8,3 +8,5 @@ dao:
     db: 0
   mongo:
     uri: mongodb://root:dJSt9bmxFk@mongo-mongodb:27017/admin?authSource=admin
+  mysql:
+    dsn: root:root@tcp(mysql:3306)/user_center?parseTime=true&charset=utf8mb4

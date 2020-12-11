@@ -20,9 +20,15 @@ pub struct Mongo {
 }
 
 #[derive(Debug, Deserialize, Default)]
+pub struct Mysql {
+    pub dsn: String,
+}
+
+#[derive(Debug, Deserialize, Default)]
 pub struct Dao {
     pub redis: Redis,
     pub mongo: Mongo,
+    pub mysql: Mysql,
 }
 
 #[derive(Debug, Deserialize, Default)]
