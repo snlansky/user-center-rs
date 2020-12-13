@@ -7,6 +7,8 @@ dao:
     password:
     db: 0
   mongo:
-    uri: mongodb://root:dJSt9bmxFk@mongo-mongodb:27017/admin?authSource=admin
+    uri: mongodb://admin:admin@127.0.0.1:27017/admin?authSource=admin
+    # uri: mongodb://root:dJSt9bmxFk@mongo-mongodb:27017/admin?authSource=admin
   mysql:
-    dsn: root:root@tcp(mysql:3306)/user_center?parseTime=true&charset=utf8mb4
+    # dsn: root:root@tcp(mysql:3306)/user_center?parseTime=true&charset=utf8mb4
+    dsn: mysql://root:root@127.0.0.1:3306/user_center?parseTime=true&charset=utf8mb4

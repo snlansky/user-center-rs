@@ -1,9 +1,12 @@
 mod chain;
 mod request;
+mod user;
+
 use crate::error::Result;
 use actix_web::HttpResponse;
 pub use chain::*;
 pub use request::*;
+pub use user::*;
 use serde::{Deserialize, Serialize};
 
 const SUCCESS_CODE: i32 = 0;

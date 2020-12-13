@@ -67,7 +67,11 @@ depapt:
 	@sudo apt-get install libmysqlclient-dev libsqlite3-dev libpq-dev
 	
 dep:
-	@cargo install diesel_cli
+	@cargo install diesel_cli --no-default-features --features "postgres sqlite mysql"
+
+mysql:
+	@diesel setup --database-url='mysql://root:root@127.0.0.1:3306/user_center?parseTime=true&charset=utf8mb4'  
+	@diesel migration generate user
 
 build: buildenv
 	$(DRUN) \

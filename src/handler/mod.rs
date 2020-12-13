@@ -6,8 +6,10 @@ use actix_web::{web, Responder};
 
 mod chain;
 mod guard;
+mod user;
 use actix_session::Session;
 use chain::*;
+use user::*;
 use model::SUCCESS_RESPONSE;
 
 pub fn app_config(config: &mut web::ServiceConfig) {
@@ -20,12 +22,13 @@ pub fn app_config(config: &mut web::ServiceConfig) {
                 .route("/chains/query", web::get().to(query_chain))
                 .route("/chains/create", web::post().to(create_chain))
                 .route("/chains/update", web::post().to(update_chain))
-                .route("/chains/{id}", web::delete().to(delete_chain)),
+                .route("/chains/{id}", web::delete().to(delete_chain))
+                .route("/users/create", web::post().to(create_user)),
         );
 }
 
 pub struct Controller {
-    pub chain_service: service::ChainService,
+    pub chain_service: service::chain_service::ChainService,
 }
 
 pub async fn login(req: web::Json<model::Login>, session: Session) -> impl Responder {

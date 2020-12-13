@@ -1,7 +1,7 @@
 use crate::model::{self, Response, ResponseList, SUCCESS_RESPONSE};
 
 use crate::error::BusinessError;
-use crate::handler::Controller;
+use super::Controller;
 use actix_web::{web, Responder};
 use std::sync;
 

@@ -2,6 +2,7 @@ use actix_session::CookieSession;
 use actix_web::{middleware, App, HttpServer};
 use log::info;
 use std::sync;
+use diesel::prelude::*;
 
 #[macro_use]
 extern crate bson;
@@ -9,6 +10,8 @@ extern crate bson;
 extern crate anyhow;
 #[macro_use]
 extern crate lazy_static;
+#[macro_use]
+extern crate diesel;
 
 mod dao;
 mod error;
@@ -17,6 +20,7 @@ mod mdw;
 mod model;
 mod service;
 mod settings;
+mod schema;
 
 fn init_logger() {
     use chrono::Local;
@@ -46,9 +50,9 @@ async fn main() -> std::io::Result<()> {
     settings::init("config-dev.yaml");
     let config = settings::GLOBAL_CONFIG.read().unwrap();
 
-    dao::init(&config.dao.mongo.uri, "blockchain_manager").await;
+    dao::mgo::init(&config.dao.mongo.uri, "blockchain_manager").await;
 
-    let chain_service = service::ChainService::new();
+    let chain_service = service::chain_service::ChainService::new();
     let ctrl = handler::Controller { chain_service };
     let ctrl = sync::Arc::new(ctrl);
     HttpServer::new(move || {

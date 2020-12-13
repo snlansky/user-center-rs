@@ -1,3 +1,2 @@
-mod chain_service;
-
-pub use chain_service::ChainService;
+pub mod chain_service;
+pub mod user_service;

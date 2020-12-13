@@ -1,13 +1,13 @@
+use bson::DateTime;
 use log::info;
 
-use crate::dao;
 use crate::error::Result;
 
-use crate::dao::{Dao, MongoObject};
+use crate::dao::mgo::{Dao, MongoObject};
 use crate::model::Chain;
 
 pub struct ChainService {
-    op: dao::Dao,
+    op: Dao,
 }
 
 impl ChainService {
