@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(32) NOT NULL,
-  `passsword` varchar(63) NOT NULL,
+  `password` varchar(63) NOT NULL,
   `age` int(10) unsigned zerofill DEFAULT NULL,
   `skey` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)

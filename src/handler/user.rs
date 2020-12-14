@@ -7,7 +7,7 @@ use std::sync;
 use crate::schema::user;
 
 pub async fn create_user(
-    req: web::Json<model::User>,
+    req: web::Json<model::NewUser>,
     ctrl: web::Data<sync::Arc<Controller>>,
 ) -> impl Responder {
     let req = req.into_inner();

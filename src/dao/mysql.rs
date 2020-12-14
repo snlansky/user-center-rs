@@ -1,5 +1,6 @@
 use diesel::prelude::*;
 use crate::error::Result;
+use crate::schema::user;
 
 pub fn establish_connection(url: &str) -> MysqlConnection {
     MysqlConnection::establish(url)
@@ -11,11 +12,15 @@ pub struct Dao {
 }
 
 impl Dao {
-    pub fn new(conn :MysqlConnection) -> Self {
+    pub fn new(conn :MysqlConnection ) -> Self {
         Self{conn}
     }
 
-    pub fn save() -> Result<()> {
+    pub fn save<U, T>(&self, records: U) -> Result<()>
+        where
+            U: Insertable<T> + diesel::Insertable<table>
+    {
+        let v = diesel::insert_into(user::table).values(records).execute(&self.conn).unwrap();
         Ok(())
     }
 }
